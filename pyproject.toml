@@ -3,5 +3,16 @@ name = "model-service"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = []
+requires-python = ">=3.12"
+dependencies = [
+    "asyncio>=3.4.3",
+    "fastapi>=0.115.12",
+    "loguru>=0.7.3",
+    "mediapipe>=0.10.21",
+    "numpy>=1.26.4",
+    "onnxruntime>=1.22.0",
+    "opencv-python>=4.11.0.86",
+    "pydantic>=2.11.5",
+    "python-decouple>=3.8",
+    "rembg>=2.0.66",
+]
