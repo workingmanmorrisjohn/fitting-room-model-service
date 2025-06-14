@@ -7,6 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "asyncio>=3.4.3",
     "fastapi>=0.115.12",
+    "httpx>=0.28.1",
     "loguru>=0.7.3",
     "mediapipe>=0.10.21",
     "numpy>=1.26.4",
@@ -15,4 +16,5 @@ dependencies = [
     "pydantic>=2.11.5",
     "python-decouple>=3.8",
     "rembg>=2.0.66",
+    "uvicorn>=0.34.3",
 ]

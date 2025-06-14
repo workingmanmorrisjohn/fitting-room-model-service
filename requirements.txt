@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+httpx
+loguru
+mediapipe
+numpy
+onnxruntime
+opencv-python
+pydantic
+python-decouple
+rembg

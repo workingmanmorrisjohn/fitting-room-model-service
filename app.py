@@ -1,5 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, Form, BackgroundTasks, status
 from fastapi.responses import Response
+from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 from typing import Optional
 from contextlib import asynccontextmanager
@@ -18,6 +19,15 @@ async def lifespan(app: FastAPI):
         pass
 
 app = FastAPI(lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 
 @app.post("/new-avatar", status_code=status.HTTP_201_CREATED)
