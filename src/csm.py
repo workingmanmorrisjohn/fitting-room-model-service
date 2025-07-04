@@ -3,7 +3,9 @@ import httpx
 
 from .config import CUBE_URL, CUBE_API_KEY
 
-async def create_csm_session(image_urls: list) -> dict:
+import json
+
+async def create_csm_session(image_urls: list, retries=3, delay=5) -> dict:
     url = f"{CUBE_URL}/v3/sessions/"
     headers = {
         "Content-Type": "application/json",
@@ -21,11 +23,20 @@ async def create_csm_session(image_urls: list) -> dict:
         }
     }
 
-    async with httpx.AsyncClient() as client:
-        response = await client.post(url, headers=headers, json=payload)
+    timeout = httpx.Timeout(connect=10.0, read=90.0, write=10.0, pool=5.0)
 
-    response.raise_for_status()
-    return response.json()
+    for attempt in range(1, retries + 1):
+        try:
+            async with httpx.AsyncClient(timeout=timeout) as client:
+                response = await client.post(url, headers=headers, json=payload)
+            response.raise_for_status()
+            return response.json()
+
+        except httpx.ReadTimeout as e:
+            print(f"⚠️ Timeout on attempt {attempt}/{retries}")
+            if attempt == retries:
+                raise
+            await asyncio.sleep(delay)
 
 
 async def check_model_ready(session_id: str) -> Optional[dict]:
@@ -46,7 +57,16 @@ async def check_model_ready(session_id: str) -> Optional[dict]:
         meshes = data.get("output", {}).get("meshes", [])
         if meshes:
             glb_url = meshes[0].get("data", {}).get("glb_url")
+            obj_url = meshes[0].get("data", {}).get("obj_url")
+
+            output = {}
+
             if glb_url:
-                return {"glb_url": glb_url}
+                output["glb_url"] = glb_url
+
+            if obj_url:
+                output["obj_url"] = obj_url
+
+            return output
 
     return None

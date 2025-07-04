@@ -35,10 +35,14 @@ async def new_avatar(
     background_tasks: BackgroundTasks,
     front_view: UploadFile = File(...),
     side_view: UploadFile = File(...),
-    height: int = Form(...)
+    back_view: UploadFile = File(...),
+    height: int = Form(...),
+    gender: str = Form(...)
 ):
     front_bytes = await front_view.read()
     side_bytes = await side_view.read()
-    
-    background_tasks.add_task(create_entries, front_bytes, side_bytes, height)
+    back_bytes = await back_view.read()
+
+
+    background_tasks.add_task(create_entries, front_bytes, side_bytes, back_bytes, height, gender)
     return Response(status_code=status.HTTP_201_CREATED)
